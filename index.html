@@ -16,8 +16,6 @@
   h1 span { color:var(--lime); }
   .subtitle { margin-top:10px; font-size:13px; color:var(--sky); font-weight:300; }
   .workspace { display:flex; gap:40px; align-items:flex-start; width:100%; max-width:1100px; flex-wrap:wrap; justify-content:center; }
-
-  /* Panel */
   .panel { background:rgba(78,112,119,0.13); border:1px solid rgba(119,174,182,0.2); border-radius:4px; padding:30px; width:350px; flex-shrink:0; }
   .panel-title { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.12em; color:var(--lime); margin-bottom:22px; padding-bottom:12px; border-bottom:1px solid rgba(222,255,76,0.2); }
   .speaker-info-block { background:rgba(35,45,69,0.6); border:1px solid rgba(119,174,182,0.15); border-radius:2px; padding:14px; margin-bottom:20px; }
@@ -30,13 +28,17 @@
   textarea::placeholder { color:rgba(119,174,182,0.4); }
   .char-count { font-size:10px; color:rgba(119,174,182,0.5); text-align:right; margin-top:4px; }
   .download-btn { width:100%; margin-top:6px; padding:14px; background:var(--lime); color:var(--navy); border:none; border-radius:2px; font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.14em; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; }
-  .download-btn:hover { background:#eeff6a; transform:translateY(-2px); box-shadow:0 8px 24px rgba(222,255,76,0.2); }
+  .download-btn:hover { background:#eeff6a; transform:translateY(-2px); }
   .download-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-
-  /* Preview */
+  .caption-box { display:none; margin-top:20px; border-top:1px solid rgba(119,174,182,0.2); padding-top:20px; }
+  .caption-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--sky); font-weight:500; margin-bottom:8px; }
+  .caption-text { background:rgba(35,45,69,0.8); border:1.5px solid rgba(119,174,182,0.2); border-radius:2px; padding:14px; margin-bottom:10px; font-size:12px; color:rgba(245,248,248,0.85); line-height:1.65; white-space:pre-wrap; max-height:160px; overflow-y:auto; }
+  .copy-btn { width:100%; padding:11px; background:transparent; color:var(--lime); border:1.5px solid var(--lime); border-radius:2px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .copy-btn:hover { background:rgba(222,255,76,0.08); }
+  .copy-btn.copied { background:var(--lime); color:var(--navy); }
   .preview-area { display:flex; flex-direction:column; align-items:center; gap:12px; }
   .preview-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--sky); font-weight:500; align-self:flex-start; }
-  .preview-hint { font-size:11px; color:rgba(119,174,182,0.55); letter-spacing:0.04em; }
+  .preview-hint { font-size:11px; color:rgba(119,174,182,0.55); }
 
   /* ── CARD 600×600 ── */
   #speaker-card {
@@ -45,75 +47,100 @@
     background:#232D45;
   }
 
-  /* Full bleed photo */
+  /* Photo only covers RIGHT half — left stays clean navy for text */
   #card-bg-img {
-    position:absolute; inset:0;
-    background-size:cover; background-position:center top;
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:55%;          /* right 55% only */
+    background-size:cover;
+    background-position:center top;
     background-repeat:no-repeat;
     opacity:0; transition:opacity 0.4s; z-index:1;
   }
   #card-bg-img.loaded { opacity:1; }
 
-  /* Gradient overlay — darkens bottom so text is readable */
-  .card-overlay {
-    position:absolute; inset:0; z-index:2;
-    background:linear-gradient(
-      180deg,
-      rgba(35,45,69,0.05) 0%,
-      rgba(35,45,69,0.10) 35%,
-      rgba(35,45,69,0.75) 62%,
-      rgba(35,45,69,0.97) 100%
-    );
+  /* Fade photo into navy on its left edge */
+  .card-photo-fade {
+    position:absolute;
+    top:0; bottom:0;
+    right:calc(55% - 80px);
+    width:120px;
+    background:linear-gradient(to right, #232D45 0%, transparent 100%);
+    z-index:2;
+    pointer-events:none;
   }
 
-  /* Lime left accent bar */
+  /* Solid navy block on far left — guarantees text area is clean */
+  .card-left-block {
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:48%;
+    background:#232D45;
+    z-index:2;
+  }
+
+  /* Subtle fade at bottom across full width for footer text */
+  .card-bottom-fade {
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:180px;
+    background:linear-gradient(to top, rgba(35,45,69,0.98) 0%, transparent 100%);
+    z-index:3;
+  }
+
+  /* Lime accent bar */
   .card-accent-bar {
     position:absolute; left:0; top:0; bottom:0; width:6px;
     background:linear-gradient(to bottom, var(--lime), var(--orange));
-    z-index:4;
+    z-index:5;
   }
 
   /* Corner brackets */
-  .card-corner { position:absolute; width:30px; height:30px; border-style:solid; border-width:0; border-color:rgba(222,255,76,0.55); z-index:4; }
+  .card-corner { position:absolute; width:30px; height:30px; border-style:solid; border-width:0; border-color:rgba(222,255,76,0.55); z-index:5; }
   .card-corner.tl { top:20px; left:20px; border-top-width:1.5px; border-left-width:1.5px; }
   .card-corner.tr { top:20px; right:20px; border-top-width:1.5px; border-right-width:1.5px; }
   .card-corner.bl { bottom:20px; left:20px; border-bottom-width:1.5px; border-left-width:1.5px; }
   .card-corner.br { bottom:20px; right:20px; border-bottom-width:1.5px; border-right-width:1.5px; }
 
-  /* Main content — pinned to bottom */
+  /* Text content — pinned bottom left */
   .card-inner {
-    position:absolute; bottom:0; left:0; right:0; z-index:5;
-    padding:0 44px 32px 44px;
-  }
-
-  .card-tagline { font-family:'DM Sans',sans-serif; font-size:11px; font-style:italic; font-weight:300; color:var(--lime); letter-spacing:0.04em; margin-bottom:2px; }
-  .card-date { font-family:'DM Sans',sans-serif; font-size:9px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--sky); margin-bottom:12px; }
-  .card-name { font-family:'Bebas Neue',sans-serif; font-size:56px; letter-spacing:0.03em; color:#fff; line-height:0.92; margin-bottom:6px; word-break:break-word; text-shadow:0 2px 16px rgba(0,0,0,0.4); }
-  .card-title { font-family:'DM Sans',sans-serif; font-size:13px; font-weight:400; letter-spacing:0.04em; color:var(--sky); word-break:break-word; }
-
-  /* Quote block — hidden by default, shown when quote exists */
-  .card-quote-block {
-    display:none;
-    margin-top:14px;
-    padding-top:14px;
-    border-top:1.5px solid rgba(218,123,59,0.5);
-  }
-  .card-quote-block.visible { display:flex; gap:8px; align-items:flex-start; }
-  .card-qmark { font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--lime); line-height:0.75; flex-shrink:0; }
-  .card-quote { font-family:'DM Sans',sans-serif; font-size:13px; font-style:italic; font-weight:300; color:rgba(245,248,248,0.88); line-height:1.55; word-break:break-word; }
-
-  /* Logo — bottom right corner */
-  .card-logo {
-    position:absolute; bottom:28px; right:28px;
-    width:160px; height:auto; object-fit:contain;
+    position:absolute; bottom:0; left:0;
+    width:58%;
     z-index:6;
+    padding:0 28px 32px 44px;
+  }
+  .card-tagline { font-family:'DM Sans',sans-serif; font-size:10px; font-style:italic; font-weight:300; color:var(--lime); letter-spacing:0.04em; margin-bottom:2px; }
+  .card-date { font-family:'DM Sans',sans-serif; font-size:9px; font-weight:500; letter-spacing:0.13em; text-transform:uppercase; color:var(--sky); margin-bottom:10px; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:0.03em; color:#fff; line-height:0.92; margin-bottom:6px; word-break:break-word; text-shadow:0 2px 12px rgba(0,0,0,0.4); }
+  .card-title { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:400; letter-spacing:0.04em; color:var(--sky); word-break:break-word; line-height:1.4; }
+
+  .card-quote-block { display:none; margin-top:12px; padding-top:12px; border-top:1.5px solid rgba(218,123,59,0.5); }
+  .card-quote-block.visible { display:flex; gap:6px; align-items:flex-start; }
+  .card-qmark { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--lime); line-height:0.75; flex-shrink:0; }
+  .card-quote { font-family:'DM Sans',sans-serif; font-size:11px; font-style:italic; font-weight:300; color:rgba(245,248,248,0.88); line-height:1.5; word-break:break-word; }
+
+  /* Footer row */
+  .card-footer {
+    position:absolute; bottom:22px; left:44px; right:28px;
+    z-index:7; display:flex; align-items:flex-end; justify-content:space-between;
+  }
+  .card-footer-left { }
+  .card-footer-tag { font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500; color:rgba(222,255,76,0.65); letter-spacing:0.1em; }
+  .card-footer-venue { font-family:'DM Sans',sans-serif; font-size:9px; font-weight:300; color:rgba(245,248,248,0.3); letter-spacing:0.04em; font-style:italic; margin-top:2px; }
+
+  /* Logo bottom right */
+  .card-logo {
+    position:absolute; bottom:20px; right:24px;
+    width:150px; height:auto; object-fit:contain; z-index:7;
   }
 
   @media (max-width:680px) {
     #speaker-card { width:340px; height:340px; }
-    .card-inner { padding:0 28px 22px 28px; }
-    .card-name { font-size:32px; }
-    .card-logo { width:100px; bottom:18px; right:18px; }
+    .card-inner { width:62%; padding:0 16px 20px 28px; }
+    .card-name { font-size:30px; }
+    .card-left-block { width:50%; }
+    .card-logo { width:90px; bottom:12px; right:14px; }
+    .card-footer { left:28px; bottom:14px; }
     .panel { width:340px; }
   }
 </style>
@@ -122,11 +149,9 @@
 <header>
   <div class="brand-tag">⭐ Future Fit Asia 2026</div>
   <h1>YOUR<br><span>SPEAKER CARD</span></h1>
-  <p class="subtitle">Add your quote · Download your card</p>
+  <p class="subtitle">Add your quote · Download your card · Copy your LinkedIn caption</p>
 </header>
 <div class="workspace">
-
-  <!-- Form panel -->
   <div class="panel">
     <p class="panel-title">YOUR CARD</p>
     <div class="speaker-info-block">
@@ -142,24 +167,32 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       DOWNLOAD MY CARD
     </button>
+    <div class="caption-box" id="caption-box">
+      <p class="caption-label">📋 Your LinkedIn Caption</p>
+      <div class="caption-text" id="caption-text"></div>
+      <button class="copy-btn" id="copy-btn">Copy Caption</button>
+    </div>
   </div>
 
-  <!-- Card preview -->
   <div class="preview-area">
     <p class="preview-label">Live Preview</p>
     <div id="speaker-card">
+      <!-- Photo right side only -->
       <div id="card-bg-img"></div>
-      <div class="card-overlay"></div>
+      <div class="card-left-block"></div>
+      <div class="card-photo-fade"></div>
+      <div class="card-bottom-fade"></div>
       <div class="card-accent-bar"></div>
       <div class="card-corner tl"></div>
       <div class="card-corner tr"></div>
       <div class="card-corner bl"></div>
       <div class="card-corner br"></div>
 
+      <!-- Text bottom left -->
       <div class="card-inner">
         <p class="card-tagline">Where Food, Health &amp; Planet Converge</p>
-        <p class="card-date">12–13 May 2026 &nbsp;·&nbsp; Goodwood Park Hotel, Singapore</p>
-        <h2 class="card-name" id="card-name">SPEAKER NAME</h2>
+        <p class="card-date">12–13 May 2026 · Goodwood Park Hotel, Singapore</p>
+        <h2 class="card-name" id="card-name">SPEAKER<br>NAME</h2>
         <p class="card-title" id="card-title">Title · Organisation</p>
         <div class="card-quote-block" id="card-quote-block">
           <span class="card-qmark">"</span>
@@ -181,7 +214,7 @@
   const paramName    = getParam('name');
   const paramTitle   = getParam('title');
   const paramPhoto   = getParam('photo');
-  const paramCaption = getParam('caption');  // kept for admin reference but not shown to speaker
+  const paramCaption = getParam('caption');
 
   if (paramName) {
     document.getElementById('display-name').textContent = paramName;
@@ -196,22 +229,31 @@
     bg.style.backgroundImage = `url(${paramPhoto})`;
     bg.classList.add('loaded');
   }
+  if (paramCaption) {
+    document.getElementById('caption-box').style.display = 'block';
+    document.getElementById('caption-text').textContent = paramCaption;
+  }
 
-  // Quote — show/hide block dynamically
-  const quoteInput = document.getElementById('inp-quote');
-  const quoteBlock = document.getElementById('card-quote-block');
-  const quoteText  = document.getElementById('card-quote');
-  const charCount  = document.getElementById('char-count');
-
-  quoteInput.addEventListener('input', function() {
+  // Quote show/hide
+  document.getElementById('inp-quote').addEventListener('input', function() {
     const val = this.value.trim();
-    charCount.textContent = this.value.length;
+    document.getElementById('char-count').textContent = this.value.length;
+    const block = document.getElementById('card-quote-block');
     if (val) {
-      quoteText.textContent = val;
-      quoteBlock.classList.add('visible');
+      document.getElementById('card-quote').textContent = val;
+      block.classList.add('visible');
     } else {
-      quoteBlock.classList.remove('visible');
+      block.classList.remove('visible');
     }
+  });
+
+  // Copy caption
+  document.getElementById('copy-btn').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('caption-text').textContent).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Caption'; btn.classList.remove('copied'); }, 2500);
+    });
   });
 
   // Download
@@ -220,7 +262,7 @@
     btn.textContent = 'GENERATING…'; btn.disabled = true;
     try {
       const canvas = await html2canvas(document.getElementById('speaker-card'), {
-        scale: 1.8, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#232D45'
+        scale:1.8, useCORS:true, allowTaint:true, logging:false, backgroundColor:'#232D45'
       });
       const link = document.createElement('a');
       link.download = `FFA2026-${(paramName||'speaker').replace(/\s+/g,'-').toUpperCase()}-card.png`;
