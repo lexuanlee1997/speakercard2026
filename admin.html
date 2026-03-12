@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FFA2026 — Speaker Link Generator (Admin)</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #232D45; --teal: #4E7077; --lime: #DEFF4C;
+    --sky: #77AEB6; --orange: #DA7B3B; --white: #F5F8F8;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy); min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px 80px; color: var(--white);
+  }
+  header { text-align: center; margin-bottom: 40px; }
+  .admin-badge {
+    display: inline-block; background: var(--orange); color: white;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 2px; margin-bottom: 14px;
+  }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem,5vw,3.2rem); letter-spacing: 0.06em; color: var(--white); line-height: 1; }
+  h1 span { color: var(--lime); }
+  .subtitle { margin-top: 8px; font-size: 13px; color: var(--sky); font-weight: 300; }
+
+  .card {
+    background: rgba(78,112,119,0.13); border: 1px solid rgba(119,174,182,0.2);
+    border-radius: 4px; padding: 32px; width: 100%; max-width: 680px;
+  }
+  .card + .card { margin-top: 24px; }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    letter-spacing: 0.12em; color: var(--lime);
+    margin-bottom: 22px; padding-bottom: 12px;
+    border-bottom: 1px solid rgba(222,255,76,0.2);
+  }
+
+  .row { display: flex; gap: 14px; margin-bottom: 14px; }
+  .field { flex: 1; }
+  .field.full { flex: none; width: 100%; margin-bottom: 14px; }
+  label {
+    display: block; font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--sky); font-weight: 500; margin-bottom: 6px;
+  }
+  input, textarea {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid rgba(119,174,182,0.25); border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--white); background: rgba(35,45,69,0.7);
+    outline: none; resize: none; transition: border-color 0.2s;
+  }
+  input:focus, textarea:focus { border-color: var(--lime); background: rgba(35,45,69,0.95); }
+  input::placeholder, textarea::placeholder { color: rgba(119,174,182,0.4); }
+  textarea { height: 120px; line-height: 1.6; }
+
+  .caption-template {
+    background: rgba(35,45,69,0.8); border: 1.5px solid rgba(119,174,182,0.15);
+    border-radius: 2px; padding: 14px; margin-bottom: 14px;
+    font-size: 12px; color: rgba(245,248,248,0.7); line-height: 1.65;
+  }
+  .caption-template strong { color: var(--lime); }
+
+  .generate-btn {
+    width: 100%; padding: 14px;
+    background: var(--lime); color: var(--navy); border: none; border-radius: 2px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.14em;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .generate-btn:hover { background: #eeff6a; transform: translateY(-1px); }
+
+  /* Output */
+  .output-box { display: none; margin-top: 22px; }
+  .output-label {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--sky); font-weight: 500; margin-bottom: 8px;
+  }
+  .link-display {
+    background: rgba(35,45,69,0.9); border: 1.5px solid rgba(222,255,76,0.3);
+    border-radius: 2px; padding: 12px 14px;
+    font-size: 12px; color: var(--lime); word-break: break-all;
+    line-height: 1.5; margin-bottom: 10px; font-family: monospace;
+  }
+  .copy-btn {
+    width: 100%; padding: 11px;
+    background: transparent; color: var(--lime);
+    border: 1.5px solid var(--lime); border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(222,255,76,0.08); }
+  .copy-btn.copied { background: var(--lime); color: var(--navy); }
+
+  /* Speaker list */
+  .speakers-list { margin-top: 12px; }
+  .speaker-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: 2px; margin-bottom: 8px;
+    background: rgba(35,45,69,0.6); border: 1px solid rgba(119,174,182,0.15);
+    gap: 12px;
+  }
+  .speaker-info { flex: 1; min-width: 0; }
+  .speaker-name { font-weight: 500; font-size: 14px; color: var(--white); }
+  .speaker-title { font-size: 11px; color: var(--sky); margin-top: 2px; }
+  .speaker-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .action-btn {
+    padding: 6px 12px; border-radius: 2px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-copy { background: rgba(222,255,76,0.12); color: var(--lime); border: 1px solid rgba(222,255,76,0.3); }
+  .btn-copy:hover { background: rgba(222,255,76,0.22); }
+  .btn-copy.copied { background: var(--lime); color: var(--navy); }
+  .btn-del { background: rgba(218,123,59,0.12); color: var(--orange); border: 1px solid rgba(218,123,59,0.3); }
+  .btn-del:hover { background: rgba(218,123,59,0.22); }
+  .empty-state { text-align: center; color: rgba(119,174,182,0.5); font-size: 13px; padding: 20px; font-style: italic; }
+
+  .info-note {
+    margin-top: 16px; padding: 12px 14px;
+    background: rgba(222,255,76,0.06); border-left: 3px solid var(--lime);
+    border-radius: 0 2px 2px 0; font-size: 12px; color: rgba(245,248,248,0.7); line-height: 1.6;
+  }
+  .info-note strong { color: var(--lime); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="admin-badge">🔒 Team Use Only</div>
+  <h1>SPEAKER LINK<br><span>GENERATOR</span></h1>
+  <p class="subtitle">Generate a personalised card link for each speaker</p>
+</header>
+
+<!-- Generator form -->
+<div class="card">
+  <p class="card-title">ADD A SPEAKER</p>
+
+  <div class="row">
+    <div class="field">
+      <label>Full Name *</label>
+      <input id="f-name" type="text" placeholder="e.g. Sarah Chen">
+    </div>
+    <div class="field">
+      <label>Title / Role *</label>
+      <input id="f-title" type="text" placeholder="e.g. CEO · Anthropic">
+    </div>
+  </div>
+
+  <div class="field full">
+    <label>Speaker's Quote (optional — appears on card)</label>
+    <input id="f-quote" type="text" placeholder="e.g. The future of food is personal.">
+  </div>
+
+  <div class="field full">
+    <label>LinkedIn Caption</label>
+    <p style="font-size:11px;color:rgba(119,174,182,0.6);margin-bottom:8px;">Template below — edit the <strong style="color:var(--lime)">[BRACKETED]</strong> parts for this speaker, then paste your version:</p>
+    <div class="caption-template">
+      Join me in Singapore on 12–13 May for the <strong>10th Future Fit Asia 🌱</strong> conference🍱 <strong>[SPEAKER ACTIVITY SENTENCE]</strong>. This year's conference will spotlight innovation focused on carbon reduction and advancing sustainability in the agrifood sector. Looking forward to catching familiar faces and meeting new fellow foodies as we explore the next frontiers in future food innovation. Link to register in comments below. <strong>[PERSONAL HASHTAGS]</strong>
+    </div>
+    <textarea id="f-caption" placeholder="Paste your customised caption for this speaker here…"></textarea>
+  </div>
+
+  <button class="generate-btn" onclick="generateLink()">GENERATE SPEAKER LINK</button>
+
+  <div class="output-box" id="output-box">
+    <p class="output-label">✅ Speaker Link Ready — Copy &amp; Send</p>
+    <div class="link-display" id="link-display"></div>
+    <button class="copy-btn" id="main-copy-btn" onclick="copyMainLink()">Copy Link</button>
+  </div>
+
+  <div class="info-note">
+    <strong>How it works:</strong> Send this link to your speaker. When they open it, their name, title and LinkedIn caption are already filled in. They just upload their photo and download their card. 🎉
+  </div>
+</div>
+
+<!-- Saved speakers -->
+<div class="card">
+  <p class="card-title">SAVED SPEAKERS (<span id="count">0</span>)</p>
+  <div class="speakers-list" id="speakers-list">
+    <p class="empty-state">No speakers added yet. Generate a link above to get started.</p>
+  </div>
+</div>
+
+<script>
+  // Base URL — auto-detects from current page location
+  function baseUrl() {
+    const url = new URL(window.location.href);
+    return url.origin + url.pathname.replace('admin.html', '') + 'index.html';
+  }
+
+  let speakers = JSON.parse(sessionStorage.getItem('ffa_speakers') || '[]');
+  renderList();
+
+  function generateLink() {
+    const name    = document.getElementById('f-name').value.trim();
+    const title   = document.getElementById('f-title').value.trim();
+    const quote   = document.getElementById('f-quote').value.trim();
+    const caption = document.getElementById('f-caption').value.trim();
+
+    if (!name || !title) {
+      alert('Please fill in at least the Name and Title.');
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.set('name', name);
+    params.set('title', title);
+    if (quote)   params.set('quote', quote);
+    if (caption) params.set('caption', caption);
+
+    const link = baseUrl() + '?' + params.toString();
+
+    // Show output
+    document.getElementById('link-display').textContent = link;
+    document.getElementById('output-box').style.display = 'block';
+    document.getElementById('main-copy-btn').textContent = 'Copy Link';
+    document.getElementById('main-copy-btn').classList.remove('copied');
+
+    // Save to list
+    const entry = { name, title, quote, caption, link, id: Date.now() };
+    speakers.unshift(entry);
+    sessionStorage.setItem('ffa_speakers', JSON.stringify(speakers));
+    renderList();
+
+    // Scroll to output
+    document.getElementById('output-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copyMainLink() {
+    const link = document.getElementById('link-display').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.getElementById('main-copy-btn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2500);
+    });
+  }
+
+  function copyLink(id) {
+    const speaker = speakers.find(s => s.id === id);
+    if (!speaker) return;
+    navigator.clipboard.writeText(speaker.link).then(() => {
+      const btn = document.getElementById('btn-' + id);
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2500);
+    });
+  }
+
+  function deleteEntry(id) {
+    speakers = speakers.filter(s => s.id !== id);
+    sessionStorage.setItem('ffa_speakers', JSON.stringify(speakers));
+    renderList();
+  }
+
+  function renderList() {
+    document.getElementById('count').textContent = speakers.length;
+    const list = document.getElementById('speakers-list');
+    if (speakers.length === 0) {
+      list.innerHTML = '<p class="empty-state">No speakers added yet. Generate a link above to get started.</p>';
+      return;
+    }
+    list.innerHTML = speakers.map(s => `
+      <div class="speaker-row">
+        <div class="speaker-info">
+          <div class="speaker-name">${s.name}</div>
+          <div class="speaker-title">${s.title}</div>
+        </div>
+        <div class="speaker-actions">
+          <button class="action-btn btn-copy" id="btn-${s.id}" onclick="copyLink(${s.id})">Copy Link</button>
+          <button class="action-btn btn-del" onclick="deleteEntry(${s.id})">Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+</body>
+</html>
