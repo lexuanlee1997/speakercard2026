@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FFA2026 Speaker Card</title>
+<title>Speaker Card</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -25,7 +25,7 @@ body {
   position:relative;
 }
 
-/* BACKGROUND */
+/* BG */
 .card-bg {
   position:absolute;
   inset:0;
@@ -43,7 +43,7 @@ body {
   width:330px;
   height:330px;
   overflow:hidden;
-  border:2px solid rgba(255,255,255,0.75);
+  border:2px solid rgba(255,255,255,0.7);
 }
 
 .photo-frame img {
@@ -56,10 +56,7 @@ body {
 .text-block {
   position:absolute;
   bottom:20px;
-  left:140px;
-  display:flex;
-  gap:16px;
-  transform:translateX(10px);
+  left:150px;
 }
 
 .name {
@@ -71,10 +68,9 @@ body {
 .title {
   font-size:13px;
   color:#77AEB6;
-  text-transform:uppercase;
 }
 
-/* BOXES */
+/* UI */
 .box {
   width:600px;
   background:#1b2235;
@@ -89,7 +85,6 @@ textarea {
   color:white;
   border:none;
   padding:10px;
-  resize:none;
 }
 
 button {
@@ -98,12 +93,7 @@ button {
   background:#DEFF4C;
   border:none;
   cursor:pointer;
-  font-weight:bold;
   margin-top:10px;
-}
-
-.tag-list li {
-  margin-bottom:6px;
 }
 </style>
 </head>
@@ -111,82 +101,79 @@ button {
 <body>
 
 <div id="speaker-card">
-<img class="card-bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png">
+  <img class="card-bg"
+       src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png"
+       crossorigin="anonymous">
 
-<div class="photo-frame">
-  <img id="photo">
-</div>
+  <div class="photo-frame">
+    <img id="photo" crossorigin="anonymous">
+  </div>
 
-<div class="text-block">
-  <div>
+  <div class="text-block">
     <div class="name" id="name"></div>
     <div class="title" id="title"></div>
   </div>
 </div>
-</div>
 
 <button onclick="download()">Download Image</button>
 
-<!-- TAG GUIDE -->
+<!-- TAGS -->
 <div class="box">
-  <h3>Tag these on LinkedIn:</h3>
-  <ul id="tagList" class="tag-list"></ul>
-  <p style="font-size:12px;opacity:0.7;">
-    After pasting, type @ and select the correct profiles.
-  </p>
+  <b>Tag these:</b>
+  <ul id="tags"></ul>
 </div>
 
 <!-- CAPTION -->
 <div class="box">
-  <textarea id="captionText" readonly></textarea>
+  <textarea id="caption" readonly></textarea>
 </div>
 
-<button onclick="copyCaption()">Copy Caption</button>
-<button onclick="copyAndOpenLinkedIn()">Copy + Open LinkedIn</button>
+<button onclick="copy()">Copy Caption</button>
+<button onclick="copyAndOpen()">Copy + Open LinkedIn</button>
 
 <script>
 function getParam(k){
   return new URLSearchParams(window.location.search).get(k) || '';
 }
 
-const name = getParam('name');
-const title = getParam('title');
-const photo = getParam('photo');
-const caption = getParam('caption');
-const tags = getParam('tags');
+/* LOAD DATA */
+window.onload = () => {
 
-if(name) document.getElementById('name').textContent = name;
-if(title) document.getElementById('title').textContent = title;
-if(photo) document.getElementById('photo').src = photo;
+  const name = getParam('name');
+  const title = getParam('title');
+  const photo = getParam('photo');
+  const caption = getParam('caption');
+  const tags = getParam('tags');
 
-if(caption){
-  document.getElementById('captionText').value = caption;
-}
+  if(name) document.getElementById('name').textContent = name;
+  if(title) document.getElementById('title').textContent = title;
+  if(photo) document.getElementById('photo').src = photo;
+  if(caption) document.getElementById('caption').value = caption;
 
-/* TAG LIST */
-if(tags){
-  const list = tags.split("|");
-  const ul = document.getElementById('tagList');
-
-  list.forEach(name => {
-    const li = document.createElement('li');
-    li.textContent = "@" + name;
-    ul.appendChild(li);
-  });
+  if(tags){
+    const list = tags.split("|");
+    const ul = document.getElementById('tags');
+    list.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = "@" + t;
+      ul.appendChild(li);
+    });
+  }
 }
 
 /* COPY */
-function copyCaption(){
-  const text = document.getElementById('captionText').value;
-  navigator.clipboard.writeText(text);
-  alert("Copied!");
+function copy(){
+  const text = document.getElementById('caption').value;
+  navigator.clipboard.writeText(text)
+    .then(()=> alert("Copied"))
+    .catch(()=> alert("Copy failed"));
 }
 
-/* COPY + OPEN LINKEDIN */
-function copyAndOpenLinkedIn(){
-  const text = document.getElementById('captionText').value;
+/* COPY + OPEN */
+function copyAndOpen(){
+  const text = document.getElementById('caption').value;
   navigator.clipboard.writeText(text);
-  window.open("https://www.linkedin.com/feed/?shareActive=true", "_blank");
+  window.open("https://www.linkedin.com/feed/?shareActive=true","_blank");
 }
 
 /* DOWNLOAD */
@@ -195,8 +182,9 @@ async function download(){
     scale:2,
     useCORS:true
   });
+
   const link = document.createElement('a');
-  link.download = (name || 'speaker') + '.png';
+  link.download = "speaker.png";
   link.href = canvas.toDataURL();
   link.click();
 }
