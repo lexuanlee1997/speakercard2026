@@ -13,13 +13,12 @@ body {
   margin:0;
   background:#232D45;
   display:flex;
-  justify-content:center;
+  flex-direction:column;
   align-items:center;
-  height:100vh;
   font-family:'DM Sans', sans-serif;
 }
 
-/* ===== CARD ===== */
+/* CARD */
 #speaker-card {
   width:600px;
   height:600px;
@@ -27,57 +26,43 @@ body {
   overflow:hidden;
 }
 
-/* BACKDROP */
+/* BACKGROUND */
 .card-bg {
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:1;
 }
 
-/* ===== PHOTO (CENTER FRAME) ===== */
+/* PHOTO */
 .photo-frame {
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%, -42%);
-  
   width:330px;
   height:330px;
-
   overflow:hidden;
-  z-index:2;
-
-  /* ✨ ENHANCED FRAME + GLOW */
-  border: 2px solid rgba(255,255,255,0.75);
-
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.15) inset,   /* inner glow */
-    0 8px 30px rgba(0,0,0,0.35);             /* drop shadow for depth */
+  border:2px solid rgba(255,255,255,0.75);
+  box-shadow:0 8px 30px rgba(0,0,0,0.35);
 }
 
 .photo-frame img {
   width:100%;
   height:100%;
   object-fit:cover;
-  object-position:center;
 }
 
-/* ===== TEXT BLOCK ===== */
+/* TEXT BLOCK */
 .text-block {
   position:absolute;
-  bottom:20px; /* 🔥 lowered by total ~50px */
+  bottom:20px;
   left:140px;
-  
   display:flex;
   align-items:center;
   gap:16px;
-
-  transform: translateX(10px); /* Shift the entire text block by 10px to the right */
-  
-  z-index:3;
+  transform: translateX(10px);
 }
 
 /* LOGO */
@@ -86,50 +71,51 @@ body {
   height:45px;
   display:flex;
   align-items:center;
-  justify-content:center;
 }
 
 .logo img {
   max-width:100%;
   max-height:100%;
-  object-fit:contain;
 }
 
-/* NAME + TITLE */
-.text-content {
-  display:flex;
-  flex-direction:column;
-}
-
-/* NAME */
+/* TEXT */
 .name {
-  font-family:'Bebas Neue', sans-serif;
-  font-size:40px; /* Adjusted font size to 40px */
-  letter-spacing:0.04em;
+  font-family:'Bebas Neue';
+  font-size:40px;
   color:white;
-  line-height:1;
 }
 
-/* TITLE */
 .title {
-  margin-top:6px;
-  font-size:13px; /* Adjusted font size to 13px */
+  font-size:13px;
   color:#77AEB6;
   text-transform:uppercase;
-  letter-spacing:0.08em;
-  line-height:1.4;
 }
 
-/* DOWNLOAD BUTTON */
+/* CAPTION BOX */
+.caption-box {
+  width:600px;
+  background:#1b2235;
+  padding:16px;
+  margin-top:20px;
+}
+
+.caption-box textarea {
+  width:100%;
+  height:140px;
+  background:#11182a;
+  color:white;
+  border:none;
+  padding:10px;
+  margin-bottom:10px;
+}
+
 button {
-  position:absolute;
-  bottom:-60px;
-  left:50%;
-  transform:translateX(-50%);
-  padding:10px 20px;
+  width:100%;
+  padding:12px;
   background:#DEFF4C;
   border:none;
   cursor:pointer;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -138,35 +124,39 @@ button {
 
 <div id="speaker-card">
 
-  <!-- BACKDROP -->
-  <img class="card-bg"
-       src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png"
-       crossorigin="anonymous">
+<img class="card-bg"
+src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png"
+crossorigin="anonymous">
 
-  <!-- PHOTO -->
-  <div class="photo-frame">
-    <img id="photo">
-  </div>
+<div class="photo-frame">
+<img id="photo">
+</div>
 
-  <!-- TEXT + LOGO -->
-  <div class="text-block">
+<div class="text-block">
 
-    <!-- LOGO -->
-    <div class="logo" id="logo-box" style="display:none;">
-      <img id="logo">
-    </div>
+<div class="logo" id="logo-box" style="display:none;">
+<img id="logo">
+</div>
 
-    <!-- NAME + TITLE -->
-    <div class="text-content">
-      <div class="name" id="name"></div>
-      <div class="title" id="title"></div>
-    </div>
-
-  </div>
+<div>
+<div class="name" id="name"></div>
+<div class="title" id="title"></div>
+</div>
 
 </div>
 
-<button onclick="download()">Download</button>
+</div>
+
+<button onclick="download()">Download Image</button>
+
+<!-- CAPTION -->
+<div class="caption-box">
+  <textarea id="captionText" readonly></textarea>
+  <button onclick="copyCaption()">Copy LinkedIn Caption</button>
+  <p style="font-size:12px;opacity:0.7;">
+    Tip: After pasting, type @ to tag people/companies on LinkedIn.
+  </p>
+</div>
 
 <script>
 function getParam(k){
@@ -177,20 +167,28 @@ const name = getParam('name');
 const title = getParam('title');
 const photo = getParam('photo');
 const logo = getParam('corplogo');
+const caption = getParam('caption');
 
 if(name) document.getElementById('name').textContent = name;
 if(title) document.getElementById('title').textContent = title;
-
-if(photo){
-  document.getElementById('photo').src = photo;
-}
+if(photo) document.getElementById('photo').src = photo;
 
 if(logo){
   document.getElementById('logo').src = logo;
   document.getElementById('logo-box').style.display = 'flex';
 }
 
-/* DOWNLOAD */
+if(caption){
+  document.getElementById('captionText').value = caption;
+}
+
+function copyCaption(){
+  const text = document.getElementById('captionText');
+  text.select();
+  document.execCommand("copy");
+  alert("Copied! Paste on LinkedIn.");
+}
+
 async function download(){
   const canvas = await html2canvas(document.getElementById('speaker-card'), {
     scale:2,
