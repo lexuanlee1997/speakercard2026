@@ -26,12 +26,22 @@
   textarea { height:110px; line-height:1.6; }
 
   /* Photo URL input with preview */
-  .photo-input-wrap { position:relative; margin-bottom:8px; }
   .photo-preview-box { display:none; width:100%; height:140px; border-radius:2px; overflow:hidden; border:1px solid rgba(119,174,182,0.2); margin-top:8px; background:rgba(35,45,69,0.6); position:relative; }
   .photo-preview-box img { width:100%; height:100%; object-fit:cover; object-position:center top; }
   .photo-status { font-size:11px; margin-top:5px; }
   .photo-status.ok { color:var(--lime); }
   .photo-status.err { color:var(--orange); }
+
+  /* Corp logo preview */
+  .logo-preview-box { display:none; width:100%; height:80px; border-radius:2px; overflow:hidden; border:1px solid rgba(119,174,182,0.2); margin-top:8px; background:rgba(35,45,69,0.6); padding:10px; }
+  .logo-preview-box img { width:auto; max-width:100%; height:100%; object-fit:contain; object-position:left center; }
+  .logo-status { font-size:11px; margin-top:5px; }
+  .logo-status.ok { color:var(--lime); }
+  .logo-status.err { color:var(--orange); }
+
+  .section-divider { border:none; border-top:1px solid rgba(119,174,182,0.15); margin:18px 0; }
+
+  .optional-tag { display:inline-block; background:rgba(78,112,119,0.3); color:var(--sky); font-size:9px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:2px 7px; border-radius:2px; margin-left:6px; vertical-align:middle; }
 
   .caption-template { background:rgba(35,45,69,0.8); border:1.5px solid rgba(119,174,182,0.15); border-radius:2px; padding:13px; margin-bottom:10px; font-size:12px; color:rgba(245,248,248,0.65); line-height:1.65; }
   .caption-template strong { color:var(--lime); }
@@ -63,18 +73,20 @@
   .how-to ol { padding-left:16px; }
   .how-to li { margin-bottom:4px; }
   .how-to code { background:rgba(222,255,76,0.1); color:var(--lime); padding:1px 5px; border-radius:2px; font-size:11px; }
+  .corp-logo-badge { display:inline-block; background:rgba(119,174,182,0.15); color:var(--sky); font-size:10px; letter-spacing:0.08em; padding:3px 8px; border-radius:2px; margin-top:4px; }
 </style>
 </head>
 <body>
 <header>
   <div class="admin-badge">🔒 Team Use Only</div>
   <h1>SPEAKER LINK<br><span>GENERATOR</span></h1>
-  <p class="subtitle">Fill in speaker details · Paste WordPress photo URL · Generate their personal link</p>
+  <p class="subtitle">Fill in speaker details · Set up corporate logo · Generate their personal link</p>
 </header>
 
 <div class="card">
   <p class="card-title">ADD A SPEAKER</p>
 
+  <!-- Name & Title -->
   <div class="row">
     <div class="field">
       <label>Full Name *</label>
@@ -86,6 +98,7 @@
     </div>
   </div>
 
+  <!-- Speaker Photo URL -->
   <div class="field" style="margin-bottom:14px;">
     <label>Speaker Photo URL * <span style="color:rgba(119,174,182,0.5);font-size:9px;text-transform:none;letter-spacing:0">(from WordPress Media Library)</span></label>
     <div class="how-to">
@@ -97,17 +110,42 @@
         <li>Paste it below</li>
       </ol>
     </div>
-    <div class="photo-input-wrap">
-      <input id="f-photo-url" type="url" placeholder="https://yoursite.com/wp-content/uploads/speaker-photo.jpg" oninput="previewPhoto()">
-    </div>
+    <input id="f-photo-url" type="url" placeholder="https://yoursite.com/wp-content/uploads/speaker-photo.jpg" oninput="previewPhoto()">
     <div class="photo-preview-box" id="photo-preview-box">
       <img id="photo-preview-img" alt="Speaker photo preview">
     </div>
     <p class="photo-status" id="photo-status"></p>
   </div>
 
+  <hr class="section-divider">
+
+  <!-- ══════════════════════════════════════
+       CORPORATE LOGO SECTION (NEW)
+  ══════════════════════════════════════ -->
   <div class="field" style="margin-bottom:14px;">
-    <label>LinkedIn Caption</label>
+    <label>Corporate / Organisation Logo URL <span class="optional-tag">Optional</span></label>
+    <div class="how-to">
+      <strong>About the corporate logo:</strong>
+      <ol>
+        <li>Upload the company logo to WordPress <code>Media</code> library</li>
+        <li>Prefer a <strong>PNG with transparent background</strong> for best results</li>
+        <li>Copy the <code>File URL</code> and paste below</li>
+        <li>The logo will appear on the speaker card alongside their photo</li>
+      </ol>
+    </div>
+    <input id="f-corp-logo-url" type="url" placeholder="https://yoursite.com/wp-content/uploads/company-logo.png" oninput="previewCorpLogo()">
+    <div class="logo-preview-box" id="logo-preview-box">
+      <img id="logo-preview-img" alt="Company logo preview">
+    </div>
+    <p class="logo-status" id="logo-status"></p>
+    <p class="corp-logo-badge">🏢 Will appear on the speaker card as the speaker's company logo</p>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- LinkedIn Caption -->
+  <div class="field" style="margin-bottom:14px;">
+    <label>LinkedIn Caption <span class="optional-tag">Optional</span></label>
     <div class="caption-template">
       Join me in Singapore on 12–13 May for the <strong>10th Future Fit Asia 🌱</strong> conference🍱 <strong>[EDIT: speaker activity]</strong>. This year's conference will spotlight innovation focused on carbon reduction and advancing sustainability in the agrifood sector. Looking forward to catching familiar faces and meeting new fellow foodies as we explore the next frontiers in future food innovation. Link to register in comments below. <strong>[EDIT: hashtags]</strong>
     </div>
@@ -123,7 +161,7 @@
   </div>
 
   <div class="info-note">
-    <strong>What the speaker sees:</strong> Their name, title &amp; photo are already on the card. They only type their quote (optional) and click Download. LinkedIn caption is ready to copy. Works on any device. ✅
+    <strong>What the speaker sees:</strong> The FFA2026 backdrop is already on the card. Their photo appears in the photo slot, company logo appears if provided. They only type their quote (optional) and click Download. LinkedIn caption is ready to copy. Works on any device. ✅
   </div>
 </div>
 
@@ -148,9 +186,7 @@
     const box  = document.getElementById('photo-preview-box');
     const img  = document.getElementById('photo-preview-img');
     const status = document.getElementById('photo-status');
-
     if (!url) { box.style.display = 'none'; status.textContent = ''; return; }
-
     img.onload = () => {
       box.style.display = 'block';
       status.textContent = '✓ Photo loaded successfully';
@@ -164,23 +200,47 @@
     img.src = url;
   }
 
+  function previewCorpLogo() {
+    const url = document.getElementById('f-corp-logo-url').value.trim();
+    const box  = document.getElementById('logo-preview-box');
+    const img  = document.getElementById('logo-preview-img');
+    const status = document.getElementById('logo-status');
+    if (!url) { box.style.display = 'none'; status.textContent = ''; return; }
+    img.onload = () => {
+      box.style.display = 'block';
+      status.textContent = '✓ Logo loaded successfully';
+      status.className = 'logo-status ok';
+    };
+    img.onerror = () => {
+      box.style.display = 'none';
+      status.textContent = '✗ Could not load logo. Check the URL is correct and publicly accessible.';
+      status.className = 'logo-status err';
+    };
+    img.src = url;
+  }
+
   function generateLink() {
-    const name    = document.getElementById('f-name').value.trim();
-    const title   = document.getElementById('f-title').value.trim();
-    const photo   = document.getElementById('f-photo-url').value.trim();
-    const caption = document.getElementById('f-caption').value.trim();
+    const name     = document.getElementById('f-name').value.trim();
+    const title    = document.getElementById('f-title').value.trim();
+    const photo    = document.getElementById('f-photo-url').value.trim();
+    const corpLogo = document.getElementById('f-corp-logo-url').value.trim();
+    const caption  = document.getElementById('f-caption').value.trim();
 
     if (!name || !title) { alert('Please fill in Name and Title.'); return; }
     if (!photo) { alert('Please paste the WordPress photo URL.'); return; }
 
-    const status = document.getElementById('photo-status');
-    if (status.className.includes('err')) { alert('The photo URL could not be loaded. Please check it and try again.'); return; }
+    const photoStatus = document.getElementById('photo-status');
+    if (photoStatus.className.includes('err')) {
+      alert('The photo URL could not be loaded. Please check it and try again.');
+      return;
+    }
 
     const params = new URLSearchParams();
     params.set('name', name);
     params.set('title', title);
     params.set('photo', photo);
-    if (caption) params.set('caption', caption);
+    if (corpLogo) params.set('corplogo', corpLogo);
+    if (caption)  params.set('caption', caption);
 
     const link = baseUrl() + '?' + params.toString();
 
@@ -189,7 +249,7 @@
     document.getElementById('main-copy-btn').textContent = 'Copy Link';
     document.getElementById('main-copy-btn').classList.remove('copied');
 
-    const entry = { id: Date.now(), name, title, photo, caption, link };
+    const entry = { id: Date.now(), name, title, photo, corpLogo, caption, link };
     speakers.unshift(entry);
     renderList();
 
@@ -228,7 +288,7 @@
         <img class="speaker-thumb" src="${s.photo}" alt="${s.name}" onerror="this.style.opacity='0.3'">
         <div class="speaker-info">
           <div class="speaker-name">${s.name}</div>
-          <div class="speaker-role">${s.title}</div>
+          <div class="speaker-role">${s.title}${s.corpLogo ? ' · <span style="color:var(--lime);font-size:10px;">🏢 Logo set</span>' : ''}</div>
         </div>
         <div class="speaker-actions">
           <button class="action-btn btn-copy" id="btn-${s.id}" onclick="copyLink(${s.id})">Copy Link</button>
