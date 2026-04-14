@@ -41,7 +41,7 @@ button {
   margin-top:20px;
   background:#1b2235;
   padding:10px;
-  word-break:break-all;
+  word-break:break-word;
 }
 </style>
 </head>
@@ -61,24 +61,24 @@ button {
 
 <textarea id="caption" placeholder="LinkedIn Caption"></textarea>
 
-<hr>
+<input id="tags" placeholder="Tags (use | e.g. Future Fit Asia|John Doe)">
 
-<h4>LinkedIn Profiles (Optional - up to 5)</h4>
+<h4>LinkedIn Profiles (optional, up to 5)</h4>
 
 <input id="li1_name" placeholder="Name 1">
-<input id="li1_url" placeholder="LinkedIn URL 1">
+<input id="li1_url" placeholder="URL 1">
 
 <input id="li2_name" placeholder="Name 2">
-<input id="li2_url" placeholder="LinkedIn URL 2">
+<input id="li2_url" placeholder="URL 2">
 
 <input id="li3_name" placeholder="Name 3">
-<input id="li3_url" placeholder="LinkedIn URL 3">
+<input id="li3_url" placeholder="URL 3">
 
 <input id="li4_name" placeholder="Name 4">
-<input id="li4_url" placeholder="LinkedIn URL 4">
+<input id="li4_url" placeholder="URL 4">
 
 <input id="li5_name" placeholder="Name 5">
-<input id="li5_url" placeholder="LinkedIn URL 5">
+<input id="li5_url" placeholder="URL 5">
 
 <button onclick="generate()">Generate Link</button>
 
@@ -95,9 +95,10 @@ function generate(){
   const photo = document.getElementById('photo').value.trim();
   const logo = document.getElementById('logo').value.trim();
   const caption = document.getElementById('caption').value.trim();
+  const tags = document.getElementById('tags').value.trim();
 
   if(!name || !job || !company || !photo){
-    alert("Fill required fields");
+    alert("Please fill required fields");
     return;
   }
 
@@ -112,8 +113,9 @@ function generate(){
 
   if(logo) params.set("logo", logo);
   if(caption) params.set("caption", caption);
+  if(tags) params.set("tags", tags);
 
-  // LinkedIn entries
+  // FIXED SAFE APPEND (prevents index mismatch)
   for(let i=1;i<=5;i++){
     const n = document.getElementById(`li${i}_name`).value.trim();
     const u = document.getElementById(`li${i}_url`).value.trim();
