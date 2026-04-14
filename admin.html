@@ -28,13 +28,6 @@ input, textarea {
   box-sizing:border-box;
 }
 
-.section-title {
-  margin-top:20px;
-  margin-bottom:10px;
-  font-weight:bold;
-  opacity:0.9;
-}
-
 .row {
   display:flex;
   gap:10px;
@@ -57,7 +50,7 @@ button {
   margin-top:20px;
   background:#1b2235;
   padding:10px;
-  word-break:break-all;
+  word-break:break-word;
 }
 </style>
 </head>
@@ -77,37 +70,13 @@ button {
 
 <textarea id="caption" placeholder="LinkedIn Caption"></textarea>
 
-<div class="section-title">LinkedIn Profiles (optional)</div>
+<h4>LinkedIn Profiles (optional)</h4>
 
-<!-- PAIR 1 -->
-<div class="row">
-  <input id="li1_name" placeholder="Name 1">
-  <input id="li1_url" placeholder="LinkedIn URL 1">
-</div>
-
-<!-- PAIR 2 -->
-<div class="row">
-  <input id="li2_name" placeholder="Name 2">
-  <input id="li2_url" placeholder="LinkedIn URL 2">
-</div>
-
-<!-- PAIR 3 -->
-<div class="row">
-  <input id="li3_name" placeholder="Name 3">
-  <input id="li3_url" placeholder="LinkedIn URL 3">
-</div>
-
-<!-- PAIR 4 -->
-<div class="row">
-  <input id="li4_name" placeholder="Name 4">
-  <input id="li4_url" placeholder="LinkedIn URL 4">
-</div>
-
-<!-- PAIR 5 -->
-<div class="row">
-  <input id="li5_name" placeholder="Name 5">
-  <input id="li5_url" placeholder="LinkedIn URL 5">
-</div>
+<div class="row"><input id="n1"><input id="u1"></div>
+<div class="row"><input id="n2"><input id="u2"></div>
+<div class="row"><input id="n3"><input id="u3"></div>
+<div class="row"><input id="n4"><input id="u4"></div>
+<div class="row"><input id="n5"><input id="u5"></div>
 
 <button onclick="generate()">Generate Link</button>
 
@@ -118,42 +87,34 @@ button {
 <script>
 function generate(){
 
-  const name = document.getElementById('name').value.trim();
-  const job = document.getElementById('job').value.trim();
-  const company = document.getElementById('company').value.trim();
-  const photo = document.getElementById('photo').value.trim();
-  const logo = document.getElementById('logo').value.trim();
-  const caption = document.getElementById('caption').value.trim();
+  const data = {
+    name: document.getElementById('name').value.trim(),
+    job: document.getElementById('job').value.trim(),
+    company: document.getElementById('company').value.trim(),
+    photo: document.getElementById('photo').value.trim(),
+    logo: document.getElementById('logo').value.trim(),
+    caption: document.getElementById('caption').value.trim(),
+    links: []
+  };
 
-  if(!name || !job || !company || !photo){
-    alert("Please fill required fields");
+  if(!data.name || !data.job || !data.company || !data.photo){
+    alert("Fill required fields");
     return;
   }
 
-  const title = job + " · " + company;
-  const base = window.location.href.replace("admin.html","index.html");
-
-  const params = new URLSearchParams();
-
-  params.set("name", name);
-  params.set("title", title);
-  params.set("photo", photo);
-
-  if(logo) params.set("logo", logo);
-  if(caption) params.set("caption", caption);
-
-  // LinkedIn pairs
   for(let i=1;i<=5;i++){
-    const n = document.getElementById(`li${i}_name`).value.trim();
-    const u = document.getElementById(`li${i}_url`).value.trim();
-
+    const n = document.getElementById('n'+i).value.trim();
+    const u = document.getElementById('u'+i).value.trim();
     if(n && u){
-      params.append("li_name", n);
-      params.append("li_url", u);
+      data.links.push({name:n, url:u});
     }
   }
 
-  document.getElementById('output').textContent = base + "?" + params.toString();
+  const base = window.location.href.replace("admin.html","index.html");
+  const encoded = encodeURIComponent(JSON.stringify(data));
+
+  document.getElementById('output').textContent =
+    base + "?data=" + encoded;
 }
 </script>
 
