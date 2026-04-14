@@ -43,10 +43,16 @@ body {
   top:50%;
   left:50%;
   transform:translate(-50%, -42%);
+  
   width:330px;
   height:330px;
+
   overflow:hidden;
   z-index:2;
+
+  /* FRAME */
+  border: 2px solid rgba(255,255,255,0.7);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
 }
 
 .photo-frame img {
@@ -59,11 +65,13 @@ body {
 /* ===== TEXT BLOCK ===== */
 .text-block {
   position:absolute;
-  bottom:90px;
+  bottom:70px; /* moved lower */
   left:140px;
+
   display:flex;
   align-items:center;
   gap:16px;
+
   z-index:3;
 }
 
@@ -82,7 +90,7 @@ body {
   object-fit:contain;
 }
 
-/* NAME + TITLE STACK */
+/* NAME + TITLE */
 .text-content {
   display:flex;
   flex-direction:column;
@@ -135,7 +143,7 @@ button {
     <img id="photo">
   </div>
 
-  <!-- TEXT + LOGO BLOCK -->
+  <!-- TEXT + LOGO -->
   <div class="text-block">
 
     <!-- LOGO -->
