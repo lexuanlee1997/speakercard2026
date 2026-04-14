@@ -50,9 +50,12 @@ body {
   overflow:hidden;
   z-index:2;
 
-  /* FRAME */
-  border: 2px solid rgba(255,255,255,0.7);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset;
+  /* ✨ ENHANCED FRAME + GLOW */
+  border: 2px solid rgba(255,255,255,0.75);
+
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.15) inset,   /* inner glow */
+    0 8px 30px rgba(0,0,0,0.35);             /* drop shadow for depth */
 }
 
 .photo-frame img {
@@ -65,7 +68,7 @@ body {
 /* ===== TEXT BLOCK ===== */
 .text-block {
   position:absolute;
-  bottom:70px; /* moved lower */
+  bottom:20px; /* 🔥 lowered by total ~50px */
   left:140px;
 
   display:flex;
