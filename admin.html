@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FFA2026 Generator</title>
+<title>Speaker Generator</title>
 
 <style>
 body {
-  font-family:sans-serif;
+  font-family:Arial;
   background:#232D45;
   color:white;
   padding:40px;
@@ -52,15 +52,14 @@ button {
 <h2>Speaker Generator</h2>
 
 <input id="name" placeholder="Full Name">
-
 <input id="job" placeholder="Job Title">
 <input id="company" placeholder="Company">
 
-<input id="photo" placeholder="Photo URL">
+<input id="photo" placeholder="Speaker Photo URL">
+<input id="logo" placeholder="Corporate Logo URL (optional)">
 
 <textarea id="caption" placeholder="LinkedIn Caption"></textarea>
-
-<input id="tags" placeholder="Tags (use | e.g. Future Fit Asia|John Doe|Jane Smith)">
+<input id="tags" placeholder="Tags (use | e.g. Future Fit Asia|John Doe|Jane Doe)">
 
 <button onclick="generate()">Generate Link</button>
 
@@ -75,6 +74,7 @@ function generate(){
   const job = document.getElementById('job').value.trim();
   const company = document.getElementById('company').value.trim();
   const photo = document.getElementById('photo').value.trim();
+  const logo = document.getElementById('logo').value.trim();
   const caption = document.getElementById('caption').value.trim();
   const tags = document.getElementById('tags').value.trim();
 
@@ -91,12 +91,11 @@ function generate(){
   params.set("title", title);
   params.set("photo", photo);
 
+  if(logo) params.set("corplogo", logo);
   if(caption) params.set("caption", caption);
   if(tags) params.set("tags", tags);
 
-  const link = base + "?" + params.toString();
-
-  document.getElementById('output').textContent = link;
+  document.getElementById('output').textContent = base + "?" + params.toString();
 }
 </script>
 
