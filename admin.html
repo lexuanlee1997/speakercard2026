@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FFA2026 — Speaker Link Generator</title>
+<title>FFA2026 — Speaker Generator</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 body {
-  font-family:'DM Sans', sans-serif;
+  font-family:'DM Sans';
   background:#232D45;
   color:white;
   display:flex;
@@ -20,11 +20,6 @@ body {
 .container {
   width:100%;
   max-width:600px;
-}
-
-h1 {
-  font-family:'Bebas Neue', sans-serif;
-  letter-spacing:0.08em;
 }
 
 input, textarea {
@@ -45,21 +40,11 @@ button {
   font-weight:bold;
 }
 
-.preview {
-  margin-top:10px;
-}
-
-.preview img {
-  width:100%;
-  height:200px;
-  object-fit:cover;
-}
-
 .output {
   margin-top:20px;
-  word-break:break-all;
   background:#1b2235;
   padding:10px;
+  word-break:break-all;
 }
 </style>
 </head>
@@ -68,21 +53,19 @@ button {
 
 <div class="container">
 
-<h1>SPEAKER LINK GENERATOR</h1>
+<h2>SPEAKER LINK GENERATOR</h2>
 
 <input id="name" placeholder="Full Name">
 
 <div style="display:flex; gap:10px;">
-  <input id="job" placeholder="Job Title">
-  <input id="company" placeholder="Company">
+<input id="job" placeholder="Job Title">
+<input id="company" placeholder="Company">
 </div>
 
-<input id="photo" placeholder="Speaker Photo URL" oninput="previewPhoto()">
-<div class="preview"><img id="photoPreview"></div>
+<input id="photo" placeholder="Photo URL">
+<input id="logo" placeholder="Logo URL (optional)">
 
-<input id="logo" placeholder="Corporate Logo URL (optional)">
-
-<textarea id="caption" placeholder="LinkedIn caption (optional)"></textarea>
+<textarea id="caption" placeholder="LinkedIn Caption"></textarea>
 
 <button onclick="generate()">Generate Link</button>
 
@@ -91,12 +74,6 @@ button {
 </div>
 
 <script>
-
-function previewPhoto(){
-  document.getElementById('photoPreview').src =
-    document.getElementById('photo').value;
-}
-
 function generate(){
 
   const name = document.getElementById('name').value.trim();
@@ -127,7 +104,6 @@ function generate(){
 
   document.getElementById('output').textContent = link;
 }
-
 </script>
 
 </body>
