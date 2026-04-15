@@ -38,10 +38,12 @@ body {
   z-index:1;
 }
 
+/* FIXED PHOTO POSITION: Back to visual center */
 .photo {
   position:absolute;
-  top:110px;
-  left:140px;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -46%); 
   width:320px;
   height:320px;
   overflow:hidden;
@@ -54,7 +56,6 @@ body {
   object-fit:cover;
 }
 
-/* Updated overlay to ensure content is contained */
 .content-overlay {
   position:absolute;
   bottom:40px;
@@ -70,9 +71,8 @@ body {
   display:flex;
   flex-direction:column;
   flex: 1;
-  /* Ensures text doesn't push the logo out of the card */
   overflow: hidden; 
-  padding-right: 10px;
+  padding-right: 12px;
 }
 
 .name {
@@ -81,7 +81,7 @@ body {
   color:white;
   line-height:1;
   letter-spacing:0.5px;
-  white-space: nowrap; /* Keep name on one line, shrink to fit */
+  white-space: nowrap; 
 }
 
 .title {
@@ -91,8 +91,8 @@ body {
   text-transform:uppercase;
   letter-spacing:1px;
   line-height: 1.2;
-  word-wrap: break-word; /* Allows long titles to wrap instead of overlap */
-  max-height: 32px; /* Limits to ~2 lines to prevent covering the photo bottom */
+  word-wrap: break-word;
+  max-height: 32px;
   overflow: hidden;
 }
 
@@ -100,6 +100,7 @@ body {
   display:flex;
   align-items:center;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .logo {
@@ -120,7 +121,7 @@ body {
   object-fit:contain;
 }
 
-/* UI Panel */
+/* UI PANEL */
 .panel {
   width:320px;
   display:flex;
@@ -170,7 +171,7 @@ textarea {
   padding:10px;
   box-sizing:border-box;
   font-family:'DM Sans';
-  font-size:13px;
+  font-size: 13px;
 }
 
 button {
@@ -190,20 +191,16 @@ button {
 
 <div id="card">
   <img class="bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png" crossOrigin="anonymous">
-
   <div class="photo">
     <img id="photo" crossOrigin="anonymous">
   </div>
-
   <div class="content-overlay">
     <div class="text">
       <div class="name" id="name"></div>
       <div class="title" id="title"></div>
     </div>
     <div class="logo-container" id="logoBox" style="display:none;">
-      <div class="logo">
-        <img id="logoImg" crossOrigin="anonymous">
-      </div>
+      <div class="logo"><img id="logoImg" crossOrigin="anonymous"></div>
     </div>
   </div>
 </div>
@@ -223,7 +220,6 @@ button {
 </div>
 
 <script>
-/* Helper to scale down text if it's too wide */
 function adjustFontSize(element, maxWidth, minSize, currentSize) {
     let size = currentSize;
     while (element.scrollWidth > maxWidth && size > minSize) {
@@ -254,11 +250,9 @@ window.onload = () => {
 
   const nameEl = document.getElementById('name');
   const titleEl = document.getElementById('title');
-  const photoEl = document.getElementById('photo');
-
   nameEl.textContent = d.name;
   titleEl.textContent = d.job + " · " + d.company;
-  photoEl.src = d.photo;
+  document.getElementById('photo').src = d.photo;
 
   let processedCaption = d.caption.replace(/\*\*(.*?)\*\*/g, (match, p1) => makeBold(p1));
   document.getElementById('caption').value = processedCaption;
@@ -268,10 +262,8 @@ window.onload = () => {
     document.getElementById('logoBox').style.display = "flex";
   }
 
-  /* Run Font Adjustment after text is set */
-  // Max width is container (320px) minus logo (~80px)
+  // Dynamic shrink to fit within 320px width (leaving room for logo)
   adjustFontSize(nameEl, 240, 18, 34); 
-  adjustFontSize(titleEl, 240, 10, 12);
 
   const box = document.getElementById('links');
   d.links.forEach(l => {
@@ -298,14 +290,9 @@ async function download(){
   const canvas = await html2canvas(card, {
     scale: 3,
     useCORS: true,
-    allowTaint: false,
     backgroundColor: "#232D45",
     width: 600,
-    height: 600,
-    x: 0,
-    y: 0,
-    scrollX: 0,
-    scrollY: -window.scrollY
+    height: 600
   });
   const link = document.createElement('a');
   link.download = `FFA-Speaker-${document.getElementById('name').textContent}.png`;
