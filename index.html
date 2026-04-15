@@ -20,13 +20,13 @@ body {
   font-family:'DM Sans';
 }
 
-/* CARD CONTAINER - Forced size for clean capture */
 #card {
   width:600px;
   height:600px;
   position:relative;
-  overflow: hidden;
-  background: #232D45;
+  overflow:hidden;
+  background:#232D45;
+  flex-shrink:0;
 }
 
 .bg {
@@ -35,19 +35,21 @@ body {
   width:600px;
   height:600px;
   object-fit:cover;
-  z-index: 1;
+  z-index:1;
 }
 
-/* PHOTO */
+/* FIX: replaced transform:translate(-50%,-50%) with explicit pixel offsets.
+   html2canvas does not reliably render CSS transforms, causing the photo
+   to appear cropped/mispositioned in the downloaded image.
+   Math: top = 270 - 320/2 = 110, left = 300 - 320/2 = 140 */
 .photo {
   position:absolute;
-  top:270px; /* Replaced transform-calc with fixed points for canvas stability */
-  left:300px;
-  transform: translate(-50%, -50%);
-  width:320px; 
+  top:110px;
+  left:140px;
+  width:320px;
   height:320px;
   overflow:hidden;
-  z-index: 2;
+  z-index:2;
 }
 
 .photo img {
@@ -56,65 +58,62 @@ body {
   object-fit:cover;
 }
 
-/* MAIN CONTENT OVERLAY */
 .content-overlay {
   position:absolute;
   bottom:40px;
   left:140px;
-  width: 320px; /* Fixed width matching photo for alignment stability */
-  display: flex;
-  align-items: flex-start;
-  z-index: 3;
+  width:320px;
+  display:flex;
+  align-items:flex-start;
+  z-index:3;
 }
 
 .text {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
 }
 
 .name {
-  font-size:34px; 
+  font-size:34px;
   font-family:'Bebas Neue';
   color:white;
-  line-height: 1;
-  letter-spacing: 0.5px;
+  line-height:1;
+  letter-spacing:0.5px;
 }
 
 .title {
-  font-size:12px; 
+  font-size:12px;
   color:#77AEB6;
-  margin-top: 6px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  margin-top:6px;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
 
-/* PILL LOGO - Fixed positioning relative to the overlay */
 .logo-container {
-  display: flex;
-  align-items: center;
-  height: 34px;
+  display:flex;
+  align-items:center;
+  height:34px;
 }
 
 .logo {
-  background: white;
-  padding: 5px 14px;
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  width: 64px; 
-  height: 34px;
+  background:white;
+  padding:5px 14px;
+  border-radius:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  width:64px;
+  height:34px;
 }
 
 .logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
 }
 
-/* SIDE PANEL */
 .panel {
   width:320px;
   display:flex;
@@ -129,11 +128,11 @@ body {
 }
 
 .tag-reminder {
-  font-size: 11px; 
-  color: #77AEB6; 
-  margin-top: -5px; 
-  margin-bottom: 15px; 
-  font-style: italic;
+  font-size:11px;
+  color:#77AEB6;
+  margin-top:-5px;
+  margin-bottom:15px;
+  font-style:italic;
 }
 
 .link-item {
@@ -144,15 +143,15 @@ body {
 
 .link-name {
   color:#DEFF4C;
-  display: block;
-  font-weight: bold;
+  display:block;
+  font-weight:bold;
 }
 
 .link-url {
-  color: #77AEB6;
-  font-size: 11px;
-  display: block;
-  word-break: break-all;
+  color:#77AEB6;
+  font-size:11px;
+  display:block;
+  word-break:break-all;
 }
 
 textarea {
@@ -164,7 +163,7 @@ textarea {
   padding:10px;
   box-sizing:border-box;
   font-family:'DM Sans';
-  font-size: 13px;
+  font-size:13px;
 }
 
 button {
@@ -174,8 +173,8 @@ button {
   border:none;
   font-weight:bold;
   cursor:pointer;
-  margin-bottom: 5px;
-  color: #1b2235;
+  margin-bottom:5px;
+  color:#1b2235;
 }
 </style>
 </head>
@@ -183,116 +182,110 @@ button {
 <body>
 
 <div id="card">
-    <img class="bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png" crossOrigin="anonymous">
+  <img class="bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png" crossOrigin="anonymous">
 
-    <div class="photo">
-        <img id="photo" crossOrigin="anonymous">
+  <div class="photo">
+    <img id="photo" crossOrigin="anonymous">
+  </div>
+
+  <div class="content-overlay">
+    <div class="text">
+      <div class="name" id="name"></div>
+      <div class="title" id="title"></div>
     </div>
-
-    <div class="content-overlay">
-        <div class="text">
-            <div class="name" id="name"></div>
-            <div class="title" id="title"></div>
-        </div>
-
-        <div class="logo-container" id="logoBox" style="display:none;">
-            <div class="logo">
-                <img id="logoImg" crossOrigin="anonymous">
-            </div>
-        </div>
+    <div class="logo-container" id="logoBox" style="display:none;">
+      <div class="logo">
+        <img id="logoImg" crossOrigin="anonymous">
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="panel">
-    <div class="box">
-        <h3 style="margin-top:0; margin-bottom:8px;">LinkedIn Profiles</h3>
-        <p class="tag-reminder">Please ensure all handles are accurately tagged to maximize post engagement.</p>
-        <div id="links"></div>
-    </div>
-
-    <div class="box">
-        <textarea id="caption" readonly></textarea>
-    </div>
-
-    <button onclick="copy()">Copy Caption</button>
-    <button onclick="openLI()">Copy + Open LinkedIn</button>
-    <button onclick="download()">Download HQ Image</button>
+  <div class="box">
+    <h3 style="margin-top:0;margin-bottom:8px;">LinkedIn Profiles</h3>
+    <p class="tag-reminder">Please ensure all handles are accurately tagged to maximize post engagement.</p>
+    <div id="links"></div>
+  </div>
+  <div class="box">
+    <textarea id="caption" readonly></textarea>
+  </div>
+  <button onclick="copy()">Copy Caption</button>
+  <button onclick="openLI()">Copy + Open LinkedIn</button>
+  <button onclick="download()">Download HQ Image</button>
 </div>
 
 <script>
 function makeBold(text) {
-    const chars = {
-        'a': '𝐚', 'b': '𝐛', 'c': '𝐜', 'd': '𝐝', 'e': '𝐞', 'f': '𝐟', 'g': '𝐠', 'h': '𝐡', 'i': '𝐢', 'j': '𝐣', 'k': '𝐤', 'l': '𝐥', 'm': '𝐦',
-        'n': '𝐧', 'o': '𝐨', 'p': '𝐩', 'q': '𝐪', 'r': '𝐫', 's': '𝐬', 't': '𝐭', 'u': '𝐮', 'v': '𝐯', 'w': '𝐰', 'x': '𝐱', 'y': '𝐲', 'z': '𝐳',
-        'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
-        'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙',
-        '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'
-    };
-    return text.split('').map(c => chars[c] || c).join('');
+  const chars = {
+    'a':'𝐚','b':'𝐛','c':'𝐜','d':'𝐝','e':'𝐞','f':'𝐟','g':'𝐠','h':'𝐡','i':'𝐢','j':'𝐣','k':'𝐤','l':'𝐥','m':'𝐦',
+    'n':'𝐧','o':'𝐨','p':'𝐩','q':'𝐪','r':'𝐫','s':'𝐬','t':'𝐭','u':'𝐮','v':'𝐯','w':'𝐰','x':'𝐱','y':'𝐲','z':'𝐳',
+    'A':'𝐀','B':'𝐁','C':'𝐂','D':'𝐃','E':'𝐄','F':'𝐅','G':'𝐆','H':'𝐇','I':'𝐈','J':'𝐉','K':'𝐊','L':'𝐋','M':'𝐌',
+    'N':'𝐍','O':'𝐎','P':'𝐏','Q':'𝐐','R':'𝐑','S':'𝐒','T':'𝐓','U':'𝐔','V':'𝐕','W':'𝐖','X':'𝐗','Y':'𝐘','Z':'𝐙',
+    '0':'𝟎','1':'𝟏','2':'𝟐','3':'𝟑','4':'𝟒','5':'𝟓','6':'𝟔','7':'𝟕','8':'𝟖','9':'𝟗'
+  };
+  return text.split('').map(c => chars[c]||c).join('');
 }
 
 function getData(){
-    const raw = new URLSearchParams(window.location.search).get("data");
-    return raw ? JSON.parse(decodeURIComponent(raw)) : null;
+  const raw = new URLSearchParams(window.location.search).get("data");
+  return raw ? JSON.parse(decodeURIComponent(raw)) : null;
 }
 
 window.onload = () => {
-    const d = getData();
-    if(!d) return;
+  const d = getData();
+  if(!d) return;
 
-    document.getElementById('name').textContent = d.name;
-    document.getElementById('title').textContent = d.job + " · " + d.company;
-    document.getElementById('photo').src = d.photo;
+  document.getElementById('name').textContent = d.name;
+  document.getElementById('title').textContent = d.job + " · " + d.company;
+  document.getElementById('photo').src = d.photo;
 
-    let processedCaption = d.caption.replace(/\*\*(.*?)\*\*/g, (match, p1) => makeBold(p1));
-    document.getElementById('caption').value = processedCaption;
+  let processedCaption = d.caption.replace(/\*\*(.*?)\*\*/g, (match, p1) => makeBold(p1));
+  document.getElementById('caption').value = processedCaption;
 
-    if(d.logo){
-        document.getElementById('logoImg').src = d.logo;
-        document.getElementById('logoBox').style.display = "flex";
-    }
+  if(d.logo){
+    document.getElementById('logoImg').src = d.logo;
+    document.getElementById('logoBox').style.display = "flex";
+  }
 
-    const box = document.getElementById('links');
-    d.links.forEach(l => {
-        const container = document.createElement('a');
-        container.href = l.url;
-        container.target = "_blank";
-        container.className = "link-item";
-        container.innerHTML = `<span class="link-name">${l.name}</span><span class="link-url">${l.url}</span>`;
-        box.appendChild(container);
-    });
-}
+  const box = document.getElementById('links');
+  d.links.forEach(l => {
+    const a = document.createElement('a');
+    a.href = l.url;
+    a.target = "_blank";
+    a.className = "link-item";
+    a.innerHTML = `<span class="link-name">${l.name}</span><span class="link-url">${l.url}</span>`;
+    box.appendChild(a);
+  });
+};
 
 function copy(){
-    navigator.clipboard.writeText(document.getElementById('caption').value);
+  navigator.clipboard.writeText(document.getElementById('caption').value);
 }
 
 function openLI(){
-    copy();
-    window.open("https://www.linkedin.com/feed/", "_blank");
+  copy();
+  window.open("https://www.linkedin.com/feed/","_blank");
 }
 
 async function download(){
-    const card = document.getElementById('card');
-    
-    // Specifically targeting the rendering engine to avoid "weird" cropping
-    const canvas = await html2canvas(card, {
-        scale: 3, // High resolution
-        useCORS: true, // Crucial for external images
-        allowTaint: false,
-        backgroundColor: "#232D45",
-        width: 600,
-        height: 600,
-        x: 0,
-        y: 0,
-        scrollX: 0,
-        scrollY: -window.scrollY // Fixes cropping if page is scrolled
-    });
-
-    const link = document.createElement('a');
-    link.download = `FFA-Speaker-${document.getElementById('name').textContent}.png`;
-    link.href = canvas.toDataURL("image/png", 1.0);
-    link.click();
+  const card = document.getElementById('card');
+  const canvas = await html2canvas(card, {
+    scale: 3,
+    useCORS: true,
+    allowTaint: false,
+    backgroundColor: "#232D45",
+    width: 600,
+    height: 600,
+    x: 0,
+    y: 0,
+    scrollX: 0,
+    scrollY: -window.scrollY
+  });
+  const link = document.createElement('a');
+  link.download = `FFA-Speaker-${document.getElementById('name').textContent}.png`;
+  link.href = canvas.toDataURL("image/png", 1.0);
+  link.click();
 }
 </script>
 
