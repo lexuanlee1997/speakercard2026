@@ -1,309 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Speaker Card</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speaker Card</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<style>
-body {
-  margin:0;
-  background:#232D45;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  gap:30px;
-  padding:40px;
-  font-family:'DM Sans';
-}
+  <style>
+    body {
+      margin: 0;
+      background: #232D45;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      padding: 40px;
+      font-family: 'DM Sans';
+      flex-wrap: wrap;
+    }
 
-#card {
-  width:600px;
-  height:600px;
-  position:relative;
-  overflow:hidden;
-  background:#232D45;
-  flex-shrink:0;
-}
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+        gap: 20px;
+        align-items: center;
+      }
+    }
 
-.bg {
-  position:absolute;
-  inset:0;
-  width:600px;
-  height:600px;
-  object-fit:cover;
-  z-index:1;
-}
+    #card {
+      width: 600px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      background: #232D45;
+      flex-shrink: 0;
+    }
 
-/* EXACT COORDINATES FROM YOUR PROVIDED CODE */
-.photo {
-  position:absolute;
-  top:160px;
-  left:140px;
-  width:320px;
-  height:320px;
-  overflow:hidden;
-  z-index:2;
-}
+    @media (max-width: 768px) {
+      #card {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        aspect-ratio: 1;
+      }
+    }
 
-.photo img {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+    .bg {
+      position: absolute;
+      inset: 0;
+      width: 600px;
+      height: 600px;
+      object-fit: cover;
+      z-index: 1;
+    }
 
-.content-overlay {
-  position:absolute;
-  bottom:40px;
-  left:140px;
-  width:320px;
-  display:flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  z-index:3;
-}
+    /* EXACT COORDINATES FROM YOUR PROVIDED CODE */
+    .photo {
+      position: absolute;
+      top: 160px;
+      left: 140px;
+      width: 320px;
+      height: 320px;
+      overflow: hidden;
+      z-index: 2;
+    }
 
-.text {
-  display:flex;
-  flex-direction:column;
-  flex: 1;
-  overflow: hidden; 
-  padding-right: 12px;
-}
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.name {
-  font-size:34px;
-  font-family:'Bebas Neue';
-  color:white;
-  line-height:1;
-  letter-spacing:0.5px;
-  white-space: nowrap; 
-}
+    .content-overlay {
+      position: absolute;
+      bottom: 40px;
+      left: 140px;
+      width: 320px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 3;
+    }
 
-.title {
-  font-size:12px;
-  color:#77AEB6;
-  margin-top:6px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  line-height: 1.2;
-  word-wrap: break-word;
-  max-height: 32px;
-  overflow: hidden;
-}
+    .text {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      padding-right: 12px;
+    }
 
-.logo-container {
-  display:flex;
-  align-items:center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
+    .name {
+      font-size: 34px;
+      font-family: 'Bebas Neue';
+      color: white;
+      line-height: 1;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
 
-.logo {
-  background:white;
-  padding:5px 14px;
-  border-radius:50px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
-  width:64px;
-  height:34px;
-}
+    .title {
+      font-size: 12px;
+      color: #77AEB6;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      word-wrap: break-word;
+      max-height: 32px;
+      overflow: hidden;
+    }
 
-.logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit:contain;
-}
+    .logo-container {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
 
-.panel {
-  width:320px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
+    .logo {
+      background: white;
+      padding: 5px 14px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      width: 64px;
+      height: 34px;
+    }
 
-.box {
-  background:#1b2235;
-  padding:16px;
-  color:white;
-}
+    .logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
 
-.tag-reminder {
-  font-size:11px;
-  color:#77AEB6;
-  margin-top:-5px;
-  margin-bottom:15px;
-  font-style:italic;
-}
+    .panel {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-.link-item {
-  display:block;
-  margin-bottom:12px;
-  text-decoration:none;
-}
+    @media (max-width: 768px) {
+      .panel {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
 
-.link-name {
-  color:#DEFF4C;
-  display:block;
-  font-weight:bold;
-}
+    .box {
+      background: #1b2235;
+      padding: 16px;
+      color: white;
+    }
 
-.link-url {
-  color:#77AEB6;
-  font-size:11px;
-  display:block;
-  word-break:break-all;
-}
+    .tag-reminder {
+      font-size: 11px;
+      color: #77AEB6;
+      margin-top: -5px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
 
-textarea {
-  width:100%;
-  height:160px;
-  background:#11182a;
-  color:white;
-  border:none;
-  padding:10px;
-  box-sizing:border-box;
-  font-family:'DM Sans';
-  font-size: 13px;
-}
+    .link-item {
+      display: block;
+      margin-bottom: 12px;
+      text-decoration: none;
+    }
 
-button {
-  width:100%;
-  padding:12px;
-  background:#DEFF4C;
-  border:none;
-  font-weight:bold;
-  cursor:pointer;
-  margin-bottom:5px;
-  color:#1b2235;
-}
-</style>
+    .link-name {
+      color: #DEFF4C;
+      display: block;
+      font-weight: bold;
+    }
+
+    .link-url {
+      color: #77AEB6;
+      font-size: 11px;
+      display: block;
+      word-break: break-all;
+    }
+
+    textarea {
+      width: 100%;
+      height: 160px;
+      background: #11182a;
+      color: white;
+      border: none;
+      padding: 10px;
+      box-sizing: border-box;
+      font-family: 'DM Sans';
+      font-size: 13px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #DEFF4C;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 5px;
+      color: #1b2235;
+    }
+
+    @media (max-width: 768px) {
+      button {
+        padding: 14px;
+        font-size: 14px;
+        border-radius: 6px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="card">
-  <img class="bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png" crossOrigin="anonymous">
-  <div class="photo">
-    <img id="photo" crossOrigin="anonymous">
-  </div>
-  <div class="content-overlay">
-    <div class="text">
-      <div id="name" class="name"></div>
-      <div id="title" class="title"></div>
+  <div id="card">
+    <img class="bg" src="https://futurefitasia.com/wp-content/uploads/2026/04/FFA2026-Promotion-Speaker-2.png"
+      crossOrigin="anonymous">
+    <div class="photo">
+      <img id="photo" crossOrigin="anonymous">
     </div>
-    <div class="logo-container" id="logoBox" style="display:none;">
-      <div class="logo">
-        <img id="logoImg" crossOrigin="anonymous">
+    <div class="content-overlay">
+      <div class="text">
+        <div id="name" class="name"></div>
+        <div id="title" class="title"></div>
+      </div>
+      <div class="logo-container" id="logoBox" style="display:none;">
+        <div class="logo">
+          <img id="logoImg" crossOrigin="anonymous">
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="panel">
-  <div class="box">
-    <h3 style="margin-top:0;margin-bottom:8px;">LinkedIn Profiles</h3>
-    <p class="tag-reminder">Please ensure all handles are accurately tagged to maximize post engagement.</p>
-    <div id="links"></div>
+  <div class="panel">
+    <div class="box">
+      <h3 style="margin-top:0;margin-bottom:8px;">LinkedIn Profiles</h3>
+      <p class="tag-reminder">Please ensure all handles are accurately tagged to maximize post engagement.</p>
+      <div id="links"></div>
+    </div>
+    <div class="box">
+      <textarea id="caption" readonly></textarea>
+    </div>
+    <button onclick="copy()">Copy Caption</button>
+    <button onclick="openLI()">Copy + Open LinkedIn</button>
+    <button onclick="download()">Download HQ Image</button>
   </div>
-  <div class="box">
-    <textarea id="caption" readonly></textarea>
-  </div>
-  <button onclick="copy()">Copy Caption</button>
-  <button onclick="openLI()">Copy + Open LinkedIn</button>
-  <button onclick="download()">Download HQ Image</button>
-</div>
 
-<script>
-function adjustFontSize(element, maxWidth, minSize, currentSize) {
-    let size = currentSize;
-    while (element.scrollWidth > maxWidth && size > minSize) {
+  <script>
+    function adjustFontSize(element, maxWidth, minSize, currentSize) {
+      let size = currentSize;
+      while (element.scrollWidth > maxWidth && size > minSize) {
         size--;
         element.style.fontSize = size + "px";
+      }
     }
-}
 
-function makeBold(text) {
-  const chars = {
-    'a':'𝐚','b':'𝐛','c':'𝐜','d':'𝐝','e':'𝐞','f':'𝐟','g':'𝐠','h':'𝐡','i':'𝐢','j':'𝐣','k':'𝐤','l':'𝐥','m':'𝐦',
-    'n':'𝐧','o':'𝐨','p':'𝐩','q':'𝐪','r':'𝐫','s':'𝐬','t':'𝐭','u':'𝐮','v':'𝐯','w':'𝐰','x':'𝐱','y':'𝐲','z':'𝐳',
-    'A':'𝐀','B':'𝐁','C':'𝐂','D':'𝐃','E':'𝐄','F':'𝐅','G':'𝐆','H':'𝐇','I':'𝐈','J':'𝐉','K':'𝐊','L':'𝐋','M':'𝐌',
-    'N':'𝐍','O':'𝐎','P':'𝐏','Q':'𝐐','R':'𝐑','S':'𝐒','T':'𝐓','U':'𝐔','V':'𝐕','W':'𝐖','X':'𝐗','Y':'𝐘','Z':'𝐙',
-    '0':'𝟎','1':'𝟏','2':'𝟐','3':'𝟑','4':'𝟒','5':'𝟓','6':'𝟔','7':'𝟕','8':'𝟖','9':'𝟗'
-  };
-  return text.split('').map(c => chars[c]||c).join('');
-}
+    function makeBold(text) {
+      const chars = {
+        'a': '𝐚', 'b': '𝐛', 'c': '𝐜', 'd': '𝐝', 'e': '𝐞', 'f': '𝐟', 'g': '𝐠', 'h': '𝐡', 'i': '𝐢', 'j': '𝐣', 'k': '𝐤', 'l': '𝐥', 'm': '𝐦',
+        'n': '𝐧', 'o': '𝐨', 'p': '𝐩', 'q': '𝐪', 'r': '𝐫', 's': '𝐬', 't': '𝐭', 'u': '𝐮', 'v': '𝐯', 'w': '𝐰', 'x': '𝐱', 'y': '𝐲', 'z': '𝐳',
+        'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
+        'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙',
+        '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'
+      };
+      return text.split('').map(c => chars[c] || c).join('');
+    }
 
-function getData(){
-  const raw = new URLSearchParams(window.location.search).get("data");
-  return raw ? JSON.parse(decodeURIComponent(raw)) : null;
-}
+    function getData() {
+      // First check sessionStorage (preferred - cleaner URL)
+      let storedData = sessionStorage.getItem("speakerData");
+      if (storedData) {
+        try {
+          return JSON.parse(storedData);
+        } catch (e) {
+          console.error("Error parsing sessionStorage data:", e);
+        }
+      }
 
-window.onload = () => {
-  const d = getData();
-  if(!d) return;
+      // Fallback to URL params for backwards compatibility
+      const raw = new URLSearchParams(window.location.search).get("data");
+      return raw ? JSON.parse(decodeURIComponent(raw)) : null;
+    }
 
-  const nameEl = document.getElementById('name');
-  const titleEl = document.getElementById('title');
-  nameEl.textContent = d.name;
-  titleEl.textContent = d.job + " · " + d.company;
-  document.getElementById('photo').src = d.photo;
+    window.onload = () => {
+      const d = getData();
+      if (!d) return;
 
-  let processedCaption = d.caption.replace(/\*\*(.*?)\*\*/g, (match, p1) => makeBold(p1));
-  document.getElementById('caption').value = processedCaption;
+      const nameEl = document.getElementById('name');
+      const titleEl = document.getElementById('title');
+      nameEl.textContent = d.name;
+      titleEl.textContent = d.job + " · " + d.company;
+      document.getElementById('photo').src = d.photo;
 
-  if(d.logo){
-    document.getElementById('logoImg').src = d.logo;
-    document.getElementById('logoBox').style.display = "flex";
-  }
+      let processedCaption = d.caption.replace(/\*\*(.*?)\*\*/g, (match, p1) => makeBold(p1));
+      document.getElementById('caption').value = processedCaption;
 
-  // Adjust font size to fit the container width
-  adjustFontSize(nameEl, 240, 18, 34); 
+      if (d.logo) {
+        document.getElementById('logoImg').src = d.logo;
+        document.getElementById('logoBox').style.display = "flex";
+      }
 
-  const box = document.getElementById('links');
-  d.links.forEach(l => {
-    const a = document.createElement('a');
-    a.href = l.url;
-    a.target = "_blank";
-    a.className = "link-item";
-    a.innerHTML = `<span class="link-name">${l.name}</span><span class="link-url">${l.url}</span>`;
-    box.appendChild(a);
-  });
-};
+      // Adjust font size to fit the container width
+      adjustFontSize(nameEl, 240, 18, 34);
 
-function copy(){
-  navigator.clipboard.writeText(document.getElementById('caption').value);
-}
+      const box = document.getElementById('links');
+      d.links.forEach(l => {
+        const a = document.createElement('a');
+        a.href = l.url;
+        a.target = "_blank";
+        a.className = "link-item";
+        a.innerHTML = `<span class="link-name">${l.name}</span><span class="link-url">${l.url}</span>`;
+        box.appendChild(a);
+      });
 
-function openLI(){
-  copy();
-  window.open("https://www.linkedin.com/feed/","_blank");
-}
+      // Clear sessionStorage after loading to avoid re-use
+      sessionStorage.removeItem("speakerData");
+    };
 
-async function download(){
-  const card = document.getElementById('card');
-  const canvas = await html2canvas(card, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: "#232D45",
-    width: 600,
-    height: 600,
-    x: 0,
-    y: 0,
-    scrollX: 0,
-    scrollY: -window.scrollY
-  });
-  const link = document.createElement('a');
-  link.download = `FFA-Speaker-${document.getElementById('name').textContent}.png`;
-  link.href = canvas.toDataURL("image/png", 1.0);
-  link.click();
-}
-</script>
+    function copy() {
+      navigator.clipboard.writeText(document.getElementById('caption').value);
+    }
+
+    function openLI() {
+      copy();
+      window.open("https://www.linkedin.com/feed/", "_blank");
+    }
+
+    async function download() {
+      const card = document.getElementById('card');
+      const canvas = await html2canvas(card, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#232D45",
+        width: 600,
+        height: 600,
+        x: 0,
+        y: 0,
+        scrollX: 0,
+        scrollY: -window.scrollY
+      });
+      const link = document.createElement('a');
+      link.download = `FFA-Speaker-${document.getElementById('name').textContent}.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
+      link.click();
+    }
+  </script>
 
 </body>
+
 </html>
